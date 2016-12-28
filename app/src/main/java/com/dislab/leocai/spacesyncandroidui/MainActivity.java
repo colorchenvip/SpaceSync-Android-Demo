@@ -25,6 +25,7 @@ import com.dislab.leocai.spacesync.core.SpaceSyncConsistanceImpl;
 import com.dislab.leocai.spacesync.transformation.GyrGaccMatrixTracker;
 import com.dislab.leocai.spacesync.transformation.TrackingCallBack;
 import com.dislab.leocai.spacesync.ui.PhoneViewCallBack;
+import com.dislab.leocai.spacesync.utils.SpaceSyncFactory;
 import com.dislab.leocai.spacesyncandroidui.ui.PhoneDisplayerAndroidImpl;
 
 import java.io.IOException;
@@ -33,8 +34,6 @@ import java.util.Observer;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener, OnConnectedListener {
 
     private DataServerMultiClient dataServerMultiClient = new DataServerMultiClient();
-    private ConsistentExtraction consistentExtraction = new ConsistentExtractionImpl();
-    private GyrGaccMatrixTracker matrixTracker = new GyrGaccMatrixTracker();
     private LinearLayout phonePane;
     private TextView tvInfo;
 
@@ -76,29 +75,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
-    private void constructSpaceSyncAlogrithmListener() {
-
-        int clientsNum = dataServerMultiClient.getClientsNum();
-        phonePane.setWeightSum(clientsNum);
-        DirectionEstimator directionEstimator = new DirectionEstimatorImpl(clientsNum, consistentExtraction,
-                matrixTracker);
-        TrackingCallBack[] trackingCallBacks = new TrackingCallBack[clientsNum];
-        for (int i = 0; i < clientsNum; i++) {
-            PhoneDisplayerAndroidImpl pcImpl = new PhoneDisplayerAndroidImpl(this);
-            addPhoneViewToPane(pcImpl);
-            trackingCallBacks[i] = new PhoneViewCallBack(pcImpl);
-        }
-        GyrGaccMatrixTracker[] matrixTrackers = new GyrGaccMatrixTracker[clientsNum];
-        for (int i = 0; i < clientsNum; i++) {
-            matrixTrackers[i] = new GyrGaccMatrixTracker();
-        }
-        OreintationTracker oreintationTracker = new OreintationTrackerImpl(clientsNum, matrixTrackers,
-                trackingCallBacks);
-        SpaceSync spaceSync = new SpaceSyncConsistanceImpl(clientsNum, directionEstimator, oreintationTracker);
-        Observer spaceSyncOb = new ObserverSpaceSyncMultiClient(clientsNum, spaceSync);
-        dataServerMultiClient.addDataListener(spaceSyncOb);
-    }
-
     private void addPhoneViewToPane(PhoneDisplayerAndroidImpl pcImpl) {
         pcImpl.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
         phonePane.addView(pcImpl);
@@ -130,7 +106,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         log("ready to receive data");
-        constructSpaceSyncAlogrithmListener();
+        int clientsNum = dataServerMultiClient.getClientsNum();
+        TrackingCallBack[] trackingCallBacks = new TrackingCallBack[clientsNum];
+        for (int i = 0; i < clientsNum; i++) {
+            PhoneDisplayerAndroidImpl pcImpl = new PhoneDisplayerAndroidImpl(this);
+            addPhoneViewToPane(pcImpl);
+            trackingCallBacks[i] = new PhoneViewCallBack(pcImpl);
+        }
+        SpaceSync spaceSync = SpaceSyncFactory.getDefaultSpaceSync(clientsNum, trackingCallBacks, null, null);
+        Observer spaceSyncOb = new ObserverSpaceSyncMultiClient(clientsNum, spaceSync);
+        dataServerMultiClient.addDataListener(spaceSyncOb);
         try {
             dataServerMultiClient.receivedData();
         } catch (IOException e1) {
