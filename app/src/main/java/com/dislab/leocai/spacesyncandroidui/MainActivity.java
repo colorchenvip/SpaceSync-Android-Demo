@@ -25,6 +25,7 @@ import com.dislab.leocai.spacesync.core.SpaceSyncConsistanceImpl;
 import com.dislab.leocai.spacesync.transformation.GyrGaccMatrixTracker;
 import com.dislab.leocai.spacesync.transformation.TrackingCallBack;
 import com.dislab.leocai.spacesync.ui.PhoneViewCallBack;
+import com.dislab.leocai.spacesync.utils.SpaceSyncConfig;
 import com.dislab.leocai.spacesync.utils.SpaceSyncFactory;
 import com.dislab.leocai.spacesyncandroidui.ui.PhoneDisplayerAndroidImpl;
 
@@ -113,6 +114,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             addPhoneViewToPane(pcImpl);
             trackingCallBacks[i] = new PhoneViewCallBack(pcImpl);
         }
+        SpaceSyncConfig.BUFFER_SIZE = 50;
+        SpaceSyncConfig.SELECTED_FC_THRESHOLD = 0.5;
+        SpaceSyncConfig.SYNC_THRESHOLD = 3;
         SpaceSync spaceSync = SpaceSyncFactory.getDefaultSpaceSync(clientsNum, trackingCallBacks, null, null);
         Observer spaceSyncOb = new ObserverSpaceSyncMultiClient(clientsNum, spaceSync);
         dataServerMultiClient.addDataListener(spaceSyncOb);
