@@ -6,5 +6,8 @@ SpaceSync Android Demo
 
 关于spacesync请查看[iSpaceSync项目](https://github.com/LeoCai/iSpaceSync/)
 #项目配置与依赖
+##jar包依赖
 * spacesync
 * pac_transform
+##权限
+* wifi
