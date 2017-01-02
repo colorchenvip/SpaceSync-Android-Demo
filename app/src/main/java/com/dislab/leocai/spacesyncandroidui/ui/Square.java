@@ -1,7 +1,6 @@
 package com.dislab.leocai.spacesyncandroidui.ui;
 
 import com.dislab.leocai.spacesync.utils.MatrixUtils;
-import com.dislab.leocai.spacesync.utils.RotationUtils;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
