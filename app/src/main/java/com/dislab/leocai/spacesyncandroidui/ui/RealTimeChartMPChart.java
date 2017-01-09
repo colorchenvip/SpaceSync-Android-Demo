@@ -1,10 +1,12 @@
 package com.dislab.leocai.spacesyncandroidui.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.LinearLayout;
 
 import com.dislab.leocai.spacesync.ui.RealTimeChart;
+import com.dislab.leocai.spacesync.utils.SpaceSyncConfig;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
@@ -26,14 +28,20 @@ public class RealTimeChartMPChart implements RealTimeChart {
     private int cuKey;
     protected static final int MAX_X = 100;
 
+    private final int[] colors = new int[]{Color.BLACK, Color.RED, Color.GREEN, Color.GRAY};
+
     public RealTimeChartMPChart(Context context, String[]columns){
         chart = new LineChart(context);
         lineData = new LineData();
+        int i=0;
         for(String column:columns){
             ArrayList<Entry> entries;
             entries = new ArrayList<>();
             entries.add(new Entry(0, 0));
             LineDataSet dataSet = new LineDataSet(entries, column); // add entries to dataset
+            dataSet.setColor(colors[i++%colors.length]);
+            dataSet.setDrawCircles(false);
+            dataSet.setValueTextSize(0);
             lineData.addDataSet(dataSet);
         }
         chart.setData(lineData);
@@ -42,7 +50,7 @@ public class RealTimeChartMPChart implements RealTimeChart {
         chart.setPinchZoom(false);
         chart.setDoubleTapToZoomEnabled(false);
         XAxis xAxis = chart.getXAxis();
-        xAxis.setAxisMaximum(MAX_X);
+        xAxis.setAxisMaximum(SpaceSyncConfig.BUFFER_SIZE);
         xAxis.setAxisMinimum(0);
         chart.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
         setRange(-10,10);
@@ -50,15 +58,15 @@ public class RealTimeChartMPChart implements RealTimeChart {
 
     @Override
     public void addData(double[] data) {
-        cuKey++;
         for (int i = 0; i < data.length; i++) {
             lineData.addEntry(new Entry(cuKey, (float)data[i]), i);
         }
-        if (cuKey >= MAX_X) {
-            for (int i = 0; i < data.length; i++) {
-                lineData.removeEntry(cuKey - MAX_X,i);
-            }
-        }
+        cuKey++;
+//        if (cuKey >= MAX_X) {
+//            for (int i = 0; i < data.length; i++) {
+//                lineData.removeEntry(0,i);
+//            }
+//        }
     }
 
     @Override
@@ -74,11 +82,15 @@ public class RealTimeChartMPChart implements RealTimeChart {
         for (double d : data) {
             addData(new double[] { d });
         }
+        chart.getLineData().notifyDataChanged();
+        chart.notifyDataSetChanged();
         chart.postInvalidate();
+
     }
 
     @Override
     public void clearData() {
+        cuKey = 0;
         List<ILineDataSet> sets = lineData.getDataSets();
         for(ILineDataSet set:sets){
             set.clear();
@@ -91,6 +103,8 @@ public class RealTimeChartMPChart implements RealTimeChart {
         for (double[] d : data) {
             addData(d);
         }
+        chart.getLineData().notifyDataChanged();
+        chart.notifyDataSetChanged();
         chart.postInvalidate();
     }
 

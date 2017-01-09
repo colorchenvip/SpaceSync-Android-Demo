@@ -12,6 +12,7 @@ import com.dislab.leocai.spacesync.core.ConsistantAccListener;
 import com.dislab.leocai.spacesync.core.LinearAccListener;
 import com.dislab.leocai.spacesync.core.SpaceSync;
 import com.dislab.leocai.spacesync.ui.RealTimeChart;
+import com.dislab.leocai.spacesync.utils.SpaceSyncConfig;
 import com.dislab.leocai.spacesyncandroidui.R;
 import com.dislab.leocai.spacesyncandroidui.ui.RealTimeChartMPChart;
 import com.github.mikephil.charting.charts.Chart;
@@ -45,35 +46,43 @@ public class ChartFragment extends Fragment implements LinearAccListener, Consis
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         LinearLayout ly = (LinearLayout) getView().findViewById(R.id.root);
-        int clientsNum = 2;
-        ly.setWeightSum(clientsNum+1);
+        int clientsNum = spaceSync.getClientsNum();
+//        int clientsNum = 2;
+        ly.setWeightSum(clientsNum + 1);
 
-//        spaceSync.setGlobalLinearAccListener(this);
-//        spaceSync.setConsistantAccListener(this);
+        spaceSync.setGlobalLinearAccListener(this);
+        spaceSync.setConsistantAccListener(this);
 
         fcCharts = new RealTimeChartMPChart(getContext(), new String[]{"PC1"});
-        double[] ks = new double[]{1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10};
         ly.addView(fcCharts.getView());
         setChartStyle(fcCharts);
-        fcCharts.showStaticData(ks);
+//        for (int i = 0; i < 5; i++) {
+//            getActivity().runOnUiThread(new Runnable() {
+//                @Override
+//                public void run() {
+//                    double[] ks = new double[]{1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10};
+//                    fcCharts.showStaticData(ks);
+//                }
+//            });
+//        }
 
         for (int i = 0; i < clientsNum; i++) {
             RealTimeChartMPChart realTimeChart = new RealTimeChartMPChart(getContext(), new String[]{"X", "Y", "Z"});
             setChartStyle(realTimeChart);
             ly.addView(realTimeChart.getView());
             charts.add(realTimeChart);
-            double[][] ds = new double[][]{
-                    {1,2,3},
-                    {2,2,2},
-                    {3,3,4},
-                    {1,2,3},
-                    {2,2,2},
-                    {3,3,4},
-                    {1,2,3},
-                    {2,2,2},
-                    {3,3,4}
-            };
-            realTimeChart.showStaticData(ds);
+//            double[][] ds = new double[][]{
+//                    {1,2,3},
+//                    {2,2,2},
+//                    {3,3,4},
+//                    {1,2,3},
+//                    {2,2,2},
+//                    {3,3,4},
+//                    {1,2,3},
+//                    {2,2,2},
+//                    {3,3,4}
+//            };
+//            realTimeChart.showStaticData(ds);
         }
 
 
@@ -86,12 +95,22 @@ public class ChartFragment extends Fragment implements LinearAccListener, Consis
 
 
     @Override
-    public void dealWithClientGlobalAcc(int clientId, double[][] tracked_hori_lacc) {
-        charts.get(clientId).showStaticData(tracked_hori_lacc);
+    public void dealWithClientGlobalAcc(final int clientId, final double[][] tracked_hori_lacc) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                charts.get(clientId).showStaticData(tracked_hori_lacc);
+            }
+        });
     }
 
     @Override
-    public void dealWithConsistant(double[] fc) {
-        fcCharts.showStaticData(fc);
+    public void dealWithConsistant(final double[] fc) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                fcCharts.showStaticData(fc);
+            }
+        });
     }
 }

@@ -51,6 +51,19 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
         }
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        tvInfo.setText(outState.getString("tvInfo",""));
+    }
+
+    @Override
+    public void onViewStateRestored(Bundle savedInstanceState) {
+        super.onViewStateRestored(savedInstanceState);
+//        if(savedInstanceState!=null&&tvInfo!=null)
+//            savedInstanceState.putString("tvInfo", tvInfo.getText().toString());
+    }
+
     private void log(final String s) {
         getActivity().runOnUiThread(new Runnable() {
             @Override

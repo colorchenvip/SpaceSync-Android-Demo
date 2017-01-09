@@ -9,6 +9,7 @@ import com.dislab.leocai.spacesync.connection.DataServerMultiClient;
 import com.dislab.leocai.spacesync.core.SpaceSync;
 import com.dislab.leocai.spacesyncandroidui.PhoneFragment;
 import com.dislab.leocai.spacesyncandroidui.R;
+import com.dislab.leocai.spacesyncandroidui.ui.DirectionFragment;
 
 public class MainActivity extends FragmentActivity  {
 
@@ -32,7 +33,10 @@ public class MainActivity extends FragmentActivity  {
                         .setIndicator("Inertial Reading"),
                 ChartFragment.class,
                 null);
-
+        tabHost.addTab(tabHost.newTabSpec("Directions")
+                        .setIndicator("Directions"),
+                DirectionFragment.class,
+                null);
 
 
     }
