@@ -1,6 +1,7 @@
 package com.dislab.leocai.spacesyncandroidui.ui;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,9 @@ import com.dislab.leocai.spacesync.core.SpaceSync;
 import com.dislab.leocai.spacesyncandroidui.R;
 import com.dislab.leocai.spacesyncandroidui.test.MainActivity;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
@@ -53,9 +57,21 @@ public class DirectionFragment extends Fragment implements DirectionListener {
         double[][] axises = directions.getClientsPreInitXAxis();
         double[][] magDirections = directions.getClientsMagDirections();
         for (int i = 0; i < axises.length; i++) {
-            directionUIList.get(i).setV2(new float[]{(float) axises[i][0], (float) axises[i][1]});
             directionUIList.get(i).setV1(new float[]{(float) magDirections[i][0], (float) magDirections[i][1]});
+            if(isSyncTime){
+                directionUIList.get(i).setV2(new float[]{(float) axises[i][0], (float) axises[i][1]});
+                write(directionUIList.get(i).computAngle(), "angle.csv");
+            }
         }
 
+    }
+
+    private void write(double angle, String file) {
+        try {
+            FileWriter fileWriter = new FileWriter(new File(Environment.getExternalStorageDirectory(),file));
+            fileWriter.write(angle+"\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -56,33 +56,14 @@ public class ChartFragment extends Fragment implements LinearAccListener, Consis
         fcCharts = new RealTimeChartMPChart(getContext(), new String[]{"PC1"});
         ly.addView(fcCharts.getView());
         setChartStyle(fcCharts);
-//        for (int i = 0; i < 5; i++) {
-//            getActivity().runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    double[] ks = new double[]{1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10, 1, 2, 3, 2, 1, 10};
-//                    fcCharts.showStaticData(ks);
-//                }
-//            });
-//        }
+
 
         for (int i = 0; i < clientsNum; i++) {
             RealTimeChartMPChart realTimeChart = new RealTimeChartMPChart(getContext(), new String[]{"X", "Y", "Z"});
             setChartStyle(realTimeChart);
             ly.addView(realTimeChart.getView());
             charts.add(realTimeChart);
-//            double[][] ds = new double[][]{
-//                    {1,2,3},
-//                    {2,2,2},
-//                    {3,3,4},
-//                    {1,2,3},
-//                    {2,2,2},
-//                    {3,3,4},
-//                    {1,2,3},
-//                    {2,2,2},
-//                    {3,3,4}
-//            };
-//            realTimeChart.showStaticData(ds);
+
         }
 
 
