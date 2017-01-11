@@ -29,10 +29,20 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
     private LinearLayout phonePane;
     private DataServer dataServerMultiClient;
     private TextView tvInfo;
+    boolean started = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        dataServerMultiClient = ((MainActivity)getActivity()).getDataServer();
+        if(!started){
+            dataServerMultiClient = ((MainActivity)getActivity()).getDataServer();
+            try {
+                dataServerMultiClient.setOnConnectionListener(this);
+                dataServerMultiClient.startServer();
+            }catch (IOException e) {
+                e.printStackTrace();
+            }
+            started = true;
+        }
         return inflater.inflate(R.layout.content_main, container, false);
     }
     @Override
@@ -41,28 +51,11 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
         phonePane = (LinearLayout)getView().findViewById(R.id.phonepane);
         tvInfo = (TextView)getView().findViewById(R.id.tv_info);
         getView().findViewById(R.id.btn_ready).setOnClickListener(this);
-        try {
-            dataServerMultiClient.setOnConnectionListener(this);
-            dataServerMultiClient.startServer();
-            String address = dataServerMultiClient.getAddress();
-            log("Server Address:" + address);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        String address = dataServerMultiClient.getAddress();
+        log("Server Address:" + address);
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        tvInfo.setText(outState.getString("tvInfo",""));
-    }
 
-    @Override
-    public void onViewStateRestored(Bundle savedInstanceState) {
-        super.onViewStateRestored(savedInstanceState);
-//        if(savedInstanceState!=null&&tvInfo!=null)
-//            savedInstanceState.putString("tvInfo", tvInfo.getText().toString());
-    }
 
     private void log(final String s) {
         getActivity().runOnUiThread(new Runnable() {
@@ -83,9 +76,6 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
             addPhoneViewToPane(pcImpl);
             trackingCallBacks[i] = new PhoneViewCallBack(pcImpl);
         }
-        SpaceSyncConfig.BUFFER_SIZE = 50;
-        SpaceSyncConfig.SELECTED_FC_THRESHOLD = 0.5;
-        SpaceSyncConfig.SYNC_THRESHOLD = 3;
         SpaceSync spaceSync = SpaceSyncFactory.getDefaultSpaceSync(clientsNum, trackingCallBacks, null, null);
         ((MainActivity)getActivity()).setSpaceSync(spaceSync);
         Observer spaceSyncOb = new ObserverSpaceSyncMultiClient(clientsNum, spaceSync);

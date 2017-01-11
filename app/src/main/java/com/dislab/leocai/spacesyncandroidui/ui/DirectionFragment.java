@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import com.dislab.leocai.spacesync.connection.DataServerMultiClient;
 import com.dislab.leocai.spacesync.core.DirectionEstimateResults;
 import com.dislab.leocai.spacesync.core.DirectionListener;
 import com.dislab.leocai.spacesync.core.SpaceSync;
@@ -33,6 +34,7 @@ public class DirectionFragment extends Fragment implements DirectionListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         spaceSync = ((MainActivity)getActivity()).getSpaceSync();
+        spaceSync.setDataListener(new DataWriterListener());
         return inflater.inflate(R.layout.frg_chart, container, false);
     }
     @Override
@@ -54,22 +56,38 @@ public class DirectionFragment extends Fragment implements DirectionListener {
 
     @Override
     public void dealWithDirection(DirectionEstimateResults directions, boolean isSyncTime) {
-        double[][] axises = directions.getClientsPreInitXAxis();
+        double[][] axises = directions.getHoriFcDirection();
         double[][] magDirections = directions.getClientsMagDirections();
+        double [] angle = new double[axises.length];
         for (int i = 0; i < axises.length; i++) {
-            directionUIList.get(i).setV1(new float[]{(float) magDirections[i][0], (float) magDirections[i][1]});
+            directionUIList.get(i).setV1(new float[]{(float) magDirections[i][0], (float) magDirections[i][2]});
             if(isSyncTime){
-                directionUIList.get(i).setV2(new float[]{(float) axises[i][0], (float) axises[i][1]});
-                write(directionUIList.get(i).computAngle(), "angle.csv");
+                directionUIList.get(i).setV2(new float[]{(float) axises[i][0], (float) axises[i][2]});
+                angle[i] = directionUIList.get(i).computAngle();
             }
         }
-
+        if(isSyncTime)
+            write(angle);
     }
 
-    private void write(double angle, String file) {
+    FileWriter  fileWriter;
+    {
         try {
-            FileWriter fileWriter = new FileWriter(new File(Environment.getExternalStorageDirectory(),file));
-            fileWriter.write(angle+"\n");
+            fileWriter = new FileWriter(new File(Environment.getExternalStorageDirectory(), "angle.csv"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void write(double []angle) {
+        try {
+            String line="";
+            for (int i = 0; i < angle.length; i++) {
+                line += angle[i];
+                if(i!=angle.length-1) line+=",";
+            }
+            fileWriter.write(line+"\n");
+            fileWriter.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
