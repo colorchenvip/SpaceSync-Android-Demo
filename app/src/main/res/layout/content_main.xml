@@ -13,6 +13,7 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:id="@+id/phonetool"
         android:gravity="center_horizontal">
 
         <TextView
@@ -27,13 +28,19 @@
             android:text="Ready"
             android:id="@+id/btn_ready" />
     </LinearLayout>
-
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:id="@+id/phonepane">
+        android:scrollbarThumbVertical="@android:color/darker_gray"
+        android:id="@+id/scrollView" >
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/phonepane">
 
-    </LinearLayout>
+
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

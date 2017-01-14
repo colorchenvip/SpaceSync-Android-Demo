@@ -49,6 +49,7 @@ public class RealTimeChartMPChart implements RealTimeChart {
         chart.setScaleEnabled(false);
         chart.setPinchZoom(false);
         chart.setDoubleTapToZoomEnabled(false);
+        chart.setMinimumHeight(800);
         XAxis xAxis = chart.getXAxis();
         xAxis.setAxisMaximum(SpaceSyncConfig.BUFFER_SIZE);
         xAxis.setAxisMinimum(0);

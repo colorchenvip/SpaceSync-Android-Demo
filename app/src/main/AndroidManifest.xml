@@ -46,7 +46,7 @@
             <!-- </intent-filter> -->
         </activity>
         <activity
-            android:name=".test.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_test_ui"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>

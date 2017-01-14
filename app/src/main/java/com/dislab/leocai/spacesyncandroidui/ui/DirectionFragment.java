@@ -8,19 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.dislab.leocai.spacesync.connection.DataServerMultiClient;
 import com.dislab.leocai.spacesync.core.DirectionEstimateResults;
 import com.dislab.leocai.spacesync.core.DirectionListener;
 import com.dislab.leocai.spacesync.core.SpaceSync;
 import com.dislab.leocai.spacesyncandroidui.R;
-import com.dislab.leocai.spacesyncandroidui.test.MainActivity;
+import com.dislab.leocai.spacesyncandroidui.MainActivity;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Created by leocai on 17-1-9.
@@ -34,20 +32,28 @@ public class DirectionFragment extends Fragment implements DirectionListener {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         spaceSync = ((MainActivity)getActivity()).getSpaceSync();
-        spaceSync.setDataListener(new DataWriterListener());
+        if(spaceSync!=null){
+            spaceSync.setDataListener(new DataWriterListener());
+        }
         return inflater.inflate(R.layout.frg_chart, container, false);
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         LinearLayout ly = (LinearLayout) getView().findViewById(R.id.root);
-        int clientsNum = spaceSync.getClientsNum();
-        ly.setWeightSum(clientsNum+1);
-        spaceSync.setDirectionListener(this);
+        int clientsNum;
+        if(spaceSync==null){
+            clientsNum = 3;
+        }else{
+            clientsNum = spaceSync.getClientsNum();
+            spaceSync.setDirectionListener(this);
+        }
         directionUIList = new ArrayList<>(clientsNum);
         for (int i = 0; i < clientsNum; i++) {
             DirectionUI directionUI = new DirectionUI(getContext());
-            directionUI.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
+            LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 800, 1);
+            lp.setMargins(20,20,5,5);
+            directionUI.setLayoutParams(lp);
             directionUIList.add(directionUI);
             ly.addView(directionUI);
         }

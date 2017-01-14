@@ -1,12 +1,12 @@
-package com.dislab.leocai.spacesyncandroidui.test;
+package com.dislab.leocai.spacesyncandroidui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentTabHost;
 
-import com.dislab.leocai.spacesync.connection.DataServer;
 import com.dislab.leocai.spacesync.connection.DataServerMultiClient;
 import com.dislab.leocai.spacesync.core.SpaceSync;
+import com.dislab.leocai.spacesyncandroidui.ChartFragment;
 import com.dislab.leocai.spacesyncandroidui.PhoneFragment;
 import com.dislab.leocai.spacesyncandroidui.R;
 import com.dislab.leocai.spacesyncandroidui.ui.DirectionFragment;

@@ -1,4 +1,4 @@
-package com.dislab.leocai.spacesyncandroidui.test;
+package com.dislab.leocai.spacesyncandroidui;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,25 +7,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
-import com.dislab.leocai.spacesync.connection.DataServerMultiClient;
 import com.dislab.leocai.spacesync.core.ConsistantAccListener;
 import com.dislab.leocai.spacesync.core.LinearAccListener;
 import com.dislab.leocai.spacesync.core.SpaceSync;
 import com.dislab.leocai.spacesync.ui.RealTimeChart;
-import com.dislab.leocai.spacesync.utils.SpaceSyncConfig;
-import com.dislab.leocai.spacesyncandroidui.R;
 import com.dislab.leocai.spacesyncandroidui.ui.RealTimeChartMPChart;
-import com.github.mikephil.charting.charts.Chart;
-import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.XAxis;
-import com.github.mikephil.charting.components.YAxis;
-import com.github.mikephil.charting.data.Entry;
-import com.github.mikephil.charting.data.LineData;
-import com.github.mikephil.charting.data.LineDataSet;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Created by leocai on 17-1-5.
@@ -46,12 +35,16 @@ public class ChartFragment extends Fragment implements LinearAccListener, Consis
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         LinearLayout ly = (LinearLayout) getView().findViewById(R.id.root);
-        int clientsNum = spaceSync.getClientsNum();
+        int clientsNum;
+        if(spaceSync==null) {
+            clientsNum = 3;
+        }
+        else {
+            clientsNum = spaceSync.getClientsNum();
+            spaceSync.setGlobalLinearAccListener(this);
+            spaceSync.setConsistantAccListener(this);
+        }
 //        int clientsNum = 2;
-        ly.setWeightSum(clientsNum + 1);
-
-        spaceSync.setGlobalLinearAccListener(this);
-        spaceSync.setConsistantAccListener(this);
 
         fcCharts = new RealTimeChartMPChart(getContext(), new String[]{"PC1"});
         ly.addView(fcCharts.getView());
@@ -63,7 +56,6 @@ public class ChartFragment extends Fragment implements LinearAccListener, Consis
             setChartStyle(realTimeChart);
             ly.addView(realTimeChart.getView());
             charts.add(realTimeChart);
-
         }
 
 
@@ -71,7 +63,7 @@ public class ChartFragment extends Fragment implements LinearAccListener, Consis
 
     private void setChartStyle(RealTimeChartMPChart realTimeChart) {
         View view = realTimeChart.getView();
-        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
+        view.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
     }
 
 

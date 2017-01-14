@@ -9,59 +9,27 @@ import java.nio.ShortBuffer;
 
 import javax.microedition.khronos.opengles.GL10;
 
-public class Square {
+public class Line {
 
-    private double yawAngle = 0;
-    private double rollAngle = 0;
-    private double pitchAngle = 0;
 
     // Our vertices.
     private float[] vertices = {
-            -0.5f, 1, 0,//0
-            -0.5f, -1, 0,//1
-            0.5f, -1, 0,//2
-            0.5f, 1, 0,//3
+            -1f, 1, 0,//0
+            -1f, 1, 0,//1
     };
 
 
 
 
     // The order we like to connect them.
-    private short[] indices = {0, 1, 2, 3};
+    private short[] indices = {0, 1};
 
     // Our vertex buffer.
     private FloatBuffer vertexBuffer;
 
-    // Our index buffer.
-    private ShortBuffer indexBuffer;
-    private double angle = 1;
-    private double[][] rotateMatrix = MatrixUtils.MATRIX_E;
 
-    public double getYawAngle() {
-        return yawAngle;
-    }
-
-    public void setYawAngle(double yawAngle) {
-        this.yawAngle = yawAngle;
-    }
-
-    public double getRollAngle() {
-        return rollAngle;
-    }
-
-    public void setRollAngle(double rollAngle) {
-        this.rollAngle = rollAngle;
-    }
-
-    public double getPitchAngle() {
-        return pitchAngle;
-    }
-
-    public void setPitchAngle(double pitchAngle) {
-        this.pitchAngle = pitchAngle;
-    }
-
-    public Square() {
+    public Line(float[] vertices) {
+        this.vertices = vertices;
         // a float is 4 bytes, therefore we multiply the number if
         // vertices with 4.
         ByteBuffer vbb = ByteBuffer.allocateDirect(vertices.length * 4);
@@ -76,19 +44,15 @@ public class Square {
      * @param gl
      */
     public void draw(GL10 gl) {
-        double[][] vertexArray = MatrixUtils.floatArrayToMatrix(vertices);
-//        vertexArray = EularRotate.rotateI2B(vertexArray,yawAngle,pitchAngle,rollAngle);
-        vertexArray = MatrixUtils.multiply(rotateMatrix,MatrixUtils.T(vertexArray));
-       // rollAngle+=0.01;
-        float[] newV = MatrixUtils.matrixToFloatArray(MatrixUtils.T(vertexArray));
-        vertexBuffer.put(newV);
+
+        vertexBuffer.put(vertices);
         vertexBuffer.position(0);
 
         // short is 2 bytes, therefore we multiply the number if
         // vertices with 2.
         ByteBuffer ibb = ByteBuffer.allocateDirect(indices.length * 2);
         ibb.order(ByteOrder.nativeOrder());
-        indexBuffer = ibb.asShortBuffer();
+        ShortBuffer indexBuffer = ibb.asShortBuffer();
         indexBuffer.put(indices);
         indexBuffer.position(0);
 
@@ -108,7 +72,7 @@ public class Square {
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0,
                 vertexBuffer);
 //        gl.glLineWidth(5);
-        gl.glColor4f(1, 1, 0, 1f);
+        gl.glColor4f(1.5f, 1.5f, 1.5f, 1f);
 
 
         gl.glDrawElements(GL10.GL_LINE_LOOP, indices.length,
@@ -120,11 +84,4 @@ public class Square {
         gl.glDisable(GL10.GL_CULL_FACE);
     }
 
-    public double[][] getRotateMatrix() {
-        return rotateMatrix;
-    }
-
-    public void setRotateMatrix_B2G(double[][] rotateMatrix_B2G) {
-        this.rotateMatrix = rotateMatrix_B2G;
-    }
 }

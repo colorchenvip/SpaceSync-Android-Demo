@@ -10,15 +10,12 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.dislab.leocai.spacesync.connection.DataServer;
-import com.dislab.leocai.spacesync.connection.DataServerMultiClient;
 import com.dislab.leocai.spacesync.connection.OnConnectedListener;
 import com.dislab.leocai.spacesync.connection.datalistteners.ObserverSpaceSyncMultiClient;
 import com.dislab.leocai.spacesync.core.SpaceSync;
 import com.dislab.leocai.spacesync.transformation.TrackingCallBack;
 import com.dislab.leocai.spacesync.ui.PhoneViewCallBack;
-import com.dislab.leocai.spacesync.utils.SpaceSyncConfig;
 import com.dislab.leocai.spacesync.utils.SpaceSyncFactory;
-import com.dislab.leocai.spacesyncandroidui.test.MainActivity;
 import com.dislab.leocai.spacesyncandroidui.ui.PhoneDisplayerAndroidImpl;
 
 import java.io.IOException;
@@ -30,6 +27,7 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
     private DataServer dataServerMultiClient;
     private TextView tvInfo;
     boolean started = false;
+    private LinearLayout toolbar;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -50,6 +48,7 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
         super.onActivityCreated(savedInstanceState);
         phonePane = (LinearLayout)getView().findViewById(R.id.phonepane);
         tvInfo = (TextView)getView().findViewById(R.id.tv_info);
+        toolbar = (LinearLayout)getView().findViewById(R.id.phonetool);
         getView().findViewById(R.id.btn_ready).setOnClickListener(this);
         String address = dataServerMultiClient.getAddress();
         log("Server Address:" + address);
@@ -70,6 +69,8 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
     public void onClick(View v) {
         log("ready to receive data");
         int clientsNum = dataServerMultiClient.getClientsNum();
+        toolbar.setVisibility(View.GONE);
+//        int clientsNum = 3;
         TrackingCallBack[] trackingCallBacks = new TrackingCallBack[clientsNum];
         for (int i = 0; i < clientsNum; i++) {
             PhoneDisplayerAndroidImpl pcImpl = new PhoneDisplayerAndroidImpl(getActivity());
@@ -93,7 +94,9 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
     }
 
     private void addPhoneViewToPane(PhoneDisplayerAndroidImpl pcImpl) {
-        pcImpl.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.MATCH_PARENT, 1));
+        LinearLayout.LayoutParams k = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 800);
+        k.setMargins(20,5,20,5);
+        pcImpl.setLayoutParams(k);
         phonePane.addView(pcImpl);
     }
 

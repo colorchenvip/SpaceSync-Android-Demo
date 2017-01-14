@@ -13,10 +13,23 @@ import javax.microedition.khronos.opengles.GL10;
 public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfaceView.Renderer, PhoneDisplayer {
     private Square square  = new Square();
 
+    private Line lineX = new Line(new float[]{
+            0,0,0,
+            2f,0,0
+    });
+
+    private Line lineY = new Line(new float[]{
+            0,0,0,
+            0,2f,0
+    });
+    private Line lineZ = new Line(new float[]{
+            0,0,0,
+            0,0,2f
+    });
+
     public PhoneDisplayerAndroidImpl(Context context) {
         super(context);
         setRenderer(this);
-
     }
 
     @Override
@@ -46,9 +59,14 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
             gl.glLoadIdentity();
             gl.glTranslatef(0.0f, 0.0f, -5.0f);
           //  triangle1.draw(gl);
+            gl.glRotatef(15,1,0,0);
+            gl.glRotatef(-10,0,1,0);
+
             square.draw(gl);
 
-
+            lineX.draw(gl);
+            lineY.draw(gl);
+            lineZ.draw(gl);
 
         }
 
