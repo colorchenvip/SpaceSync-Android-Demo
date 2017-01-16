@@ -25,18 +25,18 @@ public class MainActivity extends FragmentActivity  {
         FragmentTabHost tabHost = (FragmentTabHost)findViewById(android.R.id.tabhost);
         tabHost.setup(this, getSupportFragmentManager(), R.id.realtabcontent);
         //1
-        tabHost.addTab(tabHost.newTabSpec("3D Illustrate")
-                        .setIndicator("3D Illustrate"),
+        tabHost.addTab(tabHost.newTabSpec("3D Illustration")
+                        .setIndicator("3D Illustration"),
                 PhoneFragment.class,
                 null);
         tabHost.addTab(tabHost.newTabSpec("Inertial Reading")
                         .setIndicator("Inertial Reading"),
                 ChartFragment.class,
                 null);
-        tabHost.addTab(tabHost.newTabSpec("Directions")
-                        .setIndicator("Directions"),
-                DirectionFragment.class,
-                null);
+//        tabHost.addTab(tabHost.newTabSpec("Direction")
+//                        .setIndicator("Direction"),
+//                DirectionFragment.class,
+//                null);
 
 
     }

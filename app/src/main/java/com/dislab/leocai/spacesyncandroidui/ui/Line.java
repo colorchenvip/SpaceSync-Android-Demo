@@ -16,13 +16,15 @@ public class Line {
     private float[] vertices = {
             -1f, 1, 0,//0
             -1f, 1, 0,//1
+            -1f, 1, 0,//1
+            -1f, 1, 0,//1
     };
 
 
 
 
     // The order we like to connect them.
-    private short[] indices = {0, 1};
+    private short[] indices = {0, 1, 2, 1, 3};
 
     // Our vertex buffer.
     private FloatBuffer vertexBuffer;
@@ -75,7 +77,7 @@ public class Line {
         gl.glColor4f(1.5f, 1.5f, 1.5f, 1f);
 
 
-        gl.glDrawElements(GL10.GL_LINE_LOOP, indices.length,
+        gl.glDrawElements(GL10.GL_LINE_STRIP, indices.length,
                 GL10.GL_UNSIGNED_SHORT, indexBuffer);
 
         // Disable the vertices buffer.

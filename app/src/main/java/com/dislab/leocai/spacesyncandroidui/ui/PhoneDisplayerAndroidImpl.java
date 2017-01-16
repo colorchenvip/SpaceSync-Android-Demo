@@ -15,16 +15,22 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
 
     private Line lineX = new Line(new float[]{
             0,0,0,
-            2f,0,0
+            2f,0,0,
+            1.9f, -0.1f,0,
+            1.9f, 0.1f,0
     });
 
     private Line lineY = new Line(new float[]{
             0,0,0,
-            0,2f,0
+            0,1.7f,0,
+            -0.1f,1.6f,0,
+            0.1f, 1.6f,0
     });
     private Line lineZ = new Line(new float[]{
             0,0,0,
-            0,0,2f
+            0,0,2.5f,
+            0,-0.1f,2.3f,
+            0,0.1f,2.5f
     });
 
     public PhoneDisplayerAndroidImpl(Context context) {
