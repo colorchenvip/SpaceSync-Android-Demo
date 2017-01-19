@@ -107,7 +107,7 @@ public class Square {
         // coordinates to use when rendering.
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0,
                 vertexBuffer);
-//        gl.glLineWidth(5);
+        gl.glLineWidth(5);
         gl.glColor4f(1, 1, 0, 1f);
 
 

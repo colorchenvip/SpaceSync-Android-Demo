@@ -58,7 +58,6 @@ public class Line {
         indexBuffer.put(indices);
         indexBuffer.position(0);
 
-
         // Counter-clockwise winding.
         gl.glFrontFace(GL10.GL_CCW);
         // Enable face culling.
