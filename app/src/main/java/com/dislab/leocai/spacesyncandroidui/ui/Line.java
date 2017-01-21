@@ -16,18 +16,23 @@ public class Line {
     private float[] vertices = {
             -1f, 1, 0,//0
             -1f, 1, 0,//1
-            -1f, 1, 0,//1
-            -1f, 1, 0,//1
     };
+
+    private float[] color = {1.5f, 1.5f, 1.5f, 1};
 
 
 
 
     // The order we like to connect them.
-    private short[] indices = {0, 1, 2, 1, 3};
+    private short[] indices = {0, 1, 2, 1,3};
 
     // Our vertex buffer.
     private FloatBuffer vertexBuffer;
+    private double[][] mat_b2g = new double[][]{
+            {1,0,0},
+            {0,1,0},
+            {0,0,1}
+    };
 
 
     public Line(float[] vertices) {
@@ -40,14 +45,22 @@ public class Line {
 
     }
 
+    public void setMatirx_b2g(double[][] mat_b2g){
+        this.mat_b2g = mat_b2g;
+    }
+
     /**
      * This function draws our square on screen.
      *
      * @param gl
      */
     public void draw(GL10 gl) {
-
-        vertexBuffer.put(vertices);
+        double[][] vertexArray = MatrixUtils.floatArrayToMatrix(vertices);
+//        vertexArray = EularRotate.rotateI2B(vertexArray,yawAngle,pitchAngle,rollAngle);
+        vertexArray = MatrixUtils.multiply(mat_b2g,MatrixUtils.T(vertexArray));
+        // rollAngle+=0.01;
+        float[] newV = MatrixUtils.matrixToFloatArray(MatrixUtils.T(vertexArray));
+        vertexBuffer.put(newV);
         vertexBuffer.position(0);
 
         // short is 2 bytes, therefore we multiply the number if
@@ -73,7 +86,7 @@ public class Line {
         gl.glVertexPointer(3, GL10.GL_FLOAT, 0,
                 vertexBuffer);
 //        gl.glLineWidth(5);
-        gl.glColor4f(1.5f, 1.5f, 1.5f, 1f);
+        gl.glColor4f(color[0], color[1], color[2], color[3]);
 
 
         gl.glDrawElements(GL10.GL_LINE_STRIP, indices.length,

@@ -68,24 +68,24 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
     @Override
     public void onClick(View v) {
         log("ready to receive data");
-        int clientsNum = dataServerMultiClient.getClientsNum();
+//        int clientsNum = dataServerMultiClient.getClientsNum();
         toolbar.setVisibility(View.GONE);
-//        int clientsNum = 3;
+        int clientsNum = 3;
         TrackingCallBack[] trackingCallBacks = new TrackingCallBack[clientsNum];
         for (int i = 0; i < clientsNum; i++) {
             PhoneDisplayerAndroidImpl pcImpl = new PhoneDisplayerAndroidImpl(getActivity());
             addPhoneViewToPane(pcImpl);
             trackingCallBacks[i] = new PhoneViewCallBack(pcImpl);
         }
-        SpaceSync spaceSync = SpaceSyncFactory.getDefaultSpaceSync(clientsNum, trackingCallBacks, null, null);
-        ((MainActivity)getActivity()).setSpaceSync(spaceSync);
-        Observer spaceSyncOb = new ObserverSpaceSyncMultiClient(clientsNum, spaceSync);
-        dataServerMultiClient.addDataListener(spaceSyncOb);
-        try {
-            dataServerMultiClient.receivedData();
-        } catch (IOException e1) {
-            e1.printStackTrace();
-        }
+//        SpaceSync spaceSync = SpaceSyncFactory.getDefaultSpaceSync(clientsNum, trackingCallBacks, null, null);
+//        ((MainActivity)getActivity()).setSpaceSync(spaceSync);
+//        Observer spaceSyncOb = new ObserverSpaceSyncMultiClient(clientsNum, spaceSync);
+//        dataServerMultiClient.addDataListener(spaceSyncOb);
+//        try {
+//            dataServerMultiClient.receivedData();
+//        } catch (IOException e1) {
+//            e1.printStackTrace();
+//        }
     }
 
     @Override

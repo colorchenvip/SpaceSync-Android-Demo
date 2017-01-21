@@ -13,25 +13,14 @@ import javax.microedition.khronos.opengles.GL10;
 public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfaceView.Renderer, PhoneDisplayer {
     private Square square  = new Square();
 
-    private Line lineX = new Line(new float[]{
-            0,0,0,
-            2f,0,0,
-            1.9f, -0.1f,0,
-            1.9f, 0.1f,0
-    });
+    private CoordinatesUI coordinatesUI = new CoordinatesUI();
+    private CoordinatesUI coordinatesUI_2 = new CoordinatesUI();
+    private double[][] mat = new double[][]{
+            {-1,0,0},
+            {0,1,0},
+            {0,0,1}
+    };
 
-    private Line lineY = new Line(new float[]{
-            0,0,0,
-            0,1.7f,0,
-            -0.1f,1.6f,0,
-            0.1f, 1.6f,0
-    });
-    private Line lineZ = new Line(new float[]{
-            0,0,0,
-            0,0,2.5f,
-            0,-0.1f,2.3f,
-            0,0.1f,2.5f
-    });
 
     public PhoneDisplayerAndroidImpl(Context context) {
         super(context);
@@ -42,8 +31,6 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
         public void onSurfaceChanged(GL10 gl, int width, int height) {
             Log.d("MyOpenGLRenderer", "Surface changed. Width=" + width
                     + " Height=" + height);
-
-
             gl.glViewport(0, 0, width, height);
             gl.glMatrixMode(GL10.GL_PROJECTION);
             gl.glLoadIdentity();
@@ -65,15 +52,14 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
             gl.glLoadIdentity();
             gl.glTranslatef(0.0f, 0.0f, -5.0f);
           //  triangle1.draw(gl);
-            gl.glRotatef(15,1,0,0);
-            gl.glRotatef(-10,0,1,0);
+            gl.glRotatef(15, 1, 0, 0);
+            gl.glRotatef(-10, 0, 1, 0);
 
             square.draw(gl);
+            coordinatesUI.draw(gl);
 
-            lineX.draw(gl);
-            lineY.draw(gl);
-            lineZ.draw(gl);
-
+            coordinatesUI_2.setMat(mat);
+            coordinatesUI_2.draw(gl);
         }
 
     public Square getSquare() {
