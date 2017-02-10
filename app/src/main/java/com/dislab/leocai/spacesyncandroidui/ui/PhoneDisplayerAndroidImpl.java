@@ -6,6 +6,7 @@ import android.opengl.GLU;
 import android.util.Log;
 
 import com.dislab.leocai.spacesync.ui.PhoneDisplayer;
+import com.dislab.leocai.spacesync.utils.MatrixUtils;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -20,6 +21,8 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
             {0,1,0},
             {0,0,1}
     };
+    private double[][] rtm_mag_b2g;
+    private double[][] rtm_b2g;
 
 
     public PhoneDisplayerAndroidImpl(Context context) {
@@ -57,7 +60,8 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
 
             square.draw(gl);
             coordinatesUI.draw(gl);
-
+            //TODO question
+            mat = MatrixUtils.multiply(MatrixUtils.T(rtm_mag_b2g), rtm_b2g);
             coordinatesUI_2.setMat(mat);
             coordinatesUI_2.draw(gl);
         }
@@ -87,6 +91,12 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
     @Override
     public void setRotationMatrix_b2g(double[][] rtm_b2g) {
         square.setRotateMatrix_B2G(rtm_b2g);
+        this.rtm_b2g = rtm_b2g;
 
+    }
+
+    @Override
+    public void setMagRotationMatrix_b2g(double[][] rtm_mag_b2g){
+        this.rtm_mag_b2g= rtm_mag_b2g;
     }
 }
