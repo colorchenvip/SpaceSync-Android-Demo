@@ -34,6 +34,13 @@ public class Line {
             {0,0,1}
     };
 
+    public float[] getColor() {
+        return color;
+    }
+
+    public void setColor(float[] color) {
+        this.color = color;
+    }
 
     public Line(float[] vertices) {
         this.vertices = vertices;

@@ -8,6 +8,7 @@ import android.widget.LinearLayout;
 import com.dislab.leocai.spacesync.ui.RealTimeChart;
 import com.dislab.leocai.spacesync.utils.SpaceSyncConfig;
 import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.Description;
 import com.github.mikephil.charting.components.XAxis;
 import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
@@ -30,7 +31,7 @@ public class RealTimeChartMPChart implements RealTimeChart {
 
     private final int[] colors = new int[]{Color.BLACK, Color.RED, Color.GREEN, Color.GRAY};
 
-    public RealTimeChartMPChart(Context context, String[]columns){
+    public RealTimeChartMPChart(Context context, String[]columns, String title){
         chart = new LineChart(context);
         lineData = new LineData();
         int i=0;
@@ -44,12 +45,17 @@ public class RealTimeChartMPChart implements RealTimeChart {
             dataSet.setValueTextSize(0);
             lineData.addDataSet(dataSet);
         }
+        Description ds= new Description();
+        ds.setText(title);
+        ds.setTextSize(16);
+        chart.setDescription(ds);
         chart.setData(lineData);
         chart.setDragEnabled(false);
         chart.setScaleEnabled(false);
         chart.setPinchZoom(false);
         chart.setDoubleTapToZoomEnabled(false);
-        chart.setMinimumHeight(800);
+        chart.setMinimumHeight(450);
+        chart.getLegend().setTextSize(14);
         XAxis xAxis = chart.getXAxis();
         xAxis.setAxisMaximum(SpaceSyncConfig.BUFFER_SIZE);
         xAxis.setAxisMinimum(0);

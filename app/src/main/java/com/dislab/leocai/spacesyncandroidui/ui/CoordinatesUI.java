@@ -20,6 +20,7 @@ public class CoordinatesUI {
             {0,1,0},
             {0,0,1}
     };
+    private float[] color;
 
 
     public void draw(GL10 gl){
@@ -30,6 +31,7 @@ public class CoordinatesUI {
         };
 
 
+        lineX.setColor(color);
         lineX.setMatirx_b2g(MatrixUtils.multiply(mat, mat1));
         lineX.draw(gl);
         double[][] mat2 = new double[][]{
@@ -51,5 +53,9 @@ public class CoordinatesUI {
 
     public void setMat(double[][] mat) {
         this.mat = mat;
+    }
+
+    public void setColor(float[] color) {
+        this.color = color;
     }
 }

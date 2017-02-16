@@ -46,13 +46,13 @@ public class ChartFragment extends Fragment implements LinearAccListener, Consis
         }
 //        int clientsNum = 2;
 
-        fcCharts = new RealTimeChartMPChart(getContext(), new String[]{"PC1"});
+        fcCharts = new RealTimeChartMPChart(getContext(), new String[]{"PC1"},"FC");
         ly.addView(fcCharts.getView());
         setChartStyle(fcCharts);
 
 
         for (int i = 0; i < clientsNum; i++) {
-            RealTimeChartMPChart realTimeChart = new RealTimeChartMPChart(getContext(), new String[]{"X", "Y", "Z"});
+            RealTimeChartMPChart realTimeChart = new RealTimeChartMPChart(getContext(), new String[]{"X", "Y", "Z"},"S"+i);
             setChartStyle(realTimeChart);
             ly.addView(realTimeChart.getView());
             charts.add(realTimeChart);

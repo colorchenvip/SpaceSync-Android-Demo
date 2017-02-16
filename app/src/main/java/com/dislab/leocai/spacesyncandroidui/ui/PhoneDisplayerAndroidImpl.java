@@ -7,6 +7,9 @@ import android.util.Log;
 
 import com.dislab.leocai.spacesync.ui.PhoneDisplayer;
 import com.dislab.leocai.spacesync.utils.MatrixUtils;
+import com.dislab.leocai.spacesync.utils.RotationUtils;
+
+import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -21,9 +24,34 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
             {0,1,0},
             {0,0,1}
     };
-    private double[][] rtm_mag_b2g;
-    private double[][] rtm_b2g;
+    private double[][] rtm_mag_b2g = new double[][]{
+            {-1,0,0},
+            {0,1,0},
+            {0,0,1}
+    };
+    private double[][] rtm_b2g = new double[][]{
+            {-1,0,0},
+            {0,1,0},
+            {0,0,1}
+    };
+    private double angle = Math.PI/12;
 
+    {
+        coordinatesUI.setColor(new float[]{0f, 0.3f, 0.8f, 0.8f});
+        coordinatesUI_2.setColor(new float[]{1f, 0f, 0f, 1});
+        Random rand = new Random();
+        double[] vg = new double[]{0,0,1};
+//        double[] vg = new double[]{0,0,1};
+        rtm_mag_b2g = MatrixUtils.T(RotationUtils.getRotationMatrixG2BBy2Vectors(vg, new double[]{0, 1, 3}));
+        angle += rand.nextDouble()*0.17;
+        double[][] mat_k = RotationUtils.quaternionToMatrix(angle, vg);
+        rtm_b2g = MatrixUtils.multiply(rtm_mag_b2g, mat_k);
+
+
+        double[][] mat_phone = RotationUtils.quaternionToMatrix(Math.PI/3+rand.nextDouble()*0.8, MatrixUtils.selectColumn(rtm_b2g,0));
+        double[][] mat_phone_z = RotationUtils.quaternionToMatrix(rand.nextDouble()*0.5, MatrixUtils.selectColumn(rtm_b2g,2));
+        square.setRotateMatrix_B2G(MatrixUtils.T(MatrixUtils.multiply(MatrixUtils.multiply(rtm_b2g, mat_phone),mat_phone_z)));
+    }
 
     public PhoneDisplayerAndroidImpl(Context context) {
         super(context);
@@ -61,8 +89,10 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
             square.draw(gl);
             coordinatesUI.draw(gl);
             //TODO question
-            mat = MatrixUtils.multiply(MatrixUtils.T(rtm_mag_b2g), rtm_b2g);
-            coordinatesUI_2.setMat(mat);
+            if(rtm_mag_b2g!=null && rtm_b2g!=null){
+                coordinatesUI.setMat(MatrixUtils.T(rtm_mag_b2g));
+                coordinatesUI_2.setMat(MatrixUtils.T(rtm_b2g));
+            }
             coordinatesUI_2.draw(gl);
         }
 
@@ -99,4 +129,17 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
     public void setMagRotationMatrix_b2g(double[][] rtm_mag_b2g){
         this.rtm_mag_b2g= rtm_mag_b2g;
     }
+
+    public double getAngle() {
+        return angle;
+    }
+
+    public void setAngle(double angle) {
+        this.angle = angle;
+    }
+
+    public double[][] getSpaceSyncMatrix() {
+        return rtm_b2g;
+    }
+
 }

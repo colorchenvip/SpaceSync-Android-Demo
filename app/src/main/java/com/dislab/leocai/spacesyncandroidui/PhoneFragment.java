@@ -1,12 +1,15 @@
 package com.dislab.leocai.spacesyncandroidui;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.dislab.leocai.spacesync.connection.DataServer;
@@ -68,24 +71,24 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
     @Override
     public void onClick(View v) {
         log("ready to receive data");
-//        int clientsNum = dataServerMultiClient.getClientsNum();
+        int clientsNum = dataServerMultiClient.getClientsNum();
         toolbar.setVisibility(View.GONE);
-        int clientsNum = 3;
+//        int clientsNum = 3;
         TrackingCallBack[] trackingCallBacks = new TrackingCallBack[clientsNum];
         for (int i = 0; i < clientsNum; i++) {
             PhoneDisplayerAndroidImpl pcImpl = new PhoneDisplayerAndroidImpl(getActivity());
-            addPhoneViewToPane(pcImpl);
+            addPhoneViewToPane(i, pcImpl);
             trackingCallBacks[i] = new PhoneViewCallBack(pcImpl);
         }
-//        SpaceSync spaceSync = SpaceSyncFactory.getDefaultSpaceSync(clientsNum, trackingCallBacks, null, null);
-//        ((MainActivity)getActivity()).setSpaceSync(spaceSync);
-//        Observer spaceSyncOb = new ObserverSpaceSyncMultiClient(clientsNum, spaceSync);
-//        dataServerMultiClient.addDataListener(spaceSyncOb);
-//        try {
-//            dataServerMultiClient.receivedData();
-//        } catch (IOException e1) {
-//            e1.printStackTrace();
-//        }
+        SpaceSync spaceSync = SpaceSyncFactory.getDefaultSpaceSync(clientsNum, trackingCallBacks, null, null);
+        ((MainActivity)getActivity()).setSpaceSync(spaceSync);
+        Observer spaceSyncOb = new ObserverSpaceSyncMultiClient(clientsNum, spaceSync);
+        dataServerMultiClient.addDataListener(spaceSyncOb);
+        try {
+            dataServerMultiClient.receivedData();
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
 
     @Override
@@ -93,11 +96,77 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
         log(s + ":connected");
     }
 
-    private void addPhoneViewToPane(PhoneDisplayerAndroidImpl pcImpl) {
-        LinearLayout.LayoutParams k = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 800);
-        k.setMargins(20,5,20,5);
+    private void addPhoneViewToPane(int i, PhoneDisplayerAndroidImpl pcImpl) {
+        LinearLayout.LayoutParams k = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 600);
+        k.setMargins(20, 5, 20, 5);
         pcImpl.setLayoutParams(k);
-        phonePane.addView(pcImpl);
+        RelativeLayout rl = new RelativeLayout(getContext());
+        LinearLayout.LayoutParams fk = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 610);
+        fk.gravity = Gravity.CENTER_HORIZONTAL;
+        rl.setLayoutParams(fk);
+        rl.addView(pcImpl);
+        TextView tv_device = new TextView(getContext());
+        tv_device.setText("S" + i);
+        tv_device.setTextColor(Color.WHITE);
+        rl.addView(tv_device);
+
+        RelativeLayout.LayoutParams k2 = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        k2.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        k2.setMargins(0, 0, 50, 0);
+        TextView tv_angle = new TextView(getContext());
+        tv_angle.setLayoutParams(k2);
+        tv_angle.setText("Angle between North And FC: " + String.format("%.2f", pcImpl.getAngle() / Math.PI * 180) + " °" + System.getProperty("line.separator"));
+        tv_angle.setTextColor(Color.WHITE);
+        rl.addView(tv_angle);
+
+        addText(rl, 0, 80, 550, 0, "Y", 14);
+        addText(rl, 0, 270, 330, 0, "X", 14);
+
+        addText(rl,0,100,450,0,"Y'", 14);
+        addText(rl,0,370,350,0,"X'", 14);
+        addText(rl,0,350,550,0,"Z Z'", 14);
+
+
+        addText(rl,0,120,350,0,"[", 40);
+        addText(rl,0,120,25,0,"]", 40);
+
+
+        RelativeLayout.LayoutParams k3 = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        k3.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        k3.setMargins(0, 80, 50, 0);
+        TextView tv_matrix = new TextView(getContext());
+        tv_matrix.setLayoutParams(k3);
+        String matrixStr = "Rotation Matrix:" +System.getProperty("line.separator") +getMatrixStr(pcImpl.getSpaceSyncMatrix());
+        tv_matrix.setText(matrixStr);
+        tv_matrix.setTextColor(Color.WHITE);
+        rl.addView(tv_matrix);
+        phonePane.addView(rl);
+    }
+
+    private void addText(RelativeLayout rl, int left, int top, int right, int bottom, String str, float size) {
+        RelativeLayout.LayoutParams k4 = new RelativeLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        k4.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        k4.setMargins(left,top,right,bottom);
+        TextView tv_x = new TextView(getContext());
+        tv_x.setTextSize(size);
+        tv_x.setLayoutParams(k4);
+        tv_x.setText(str);
+        tv_x.setTextColor(Color.WHITE);
+        rl.addView(tv_x);
+    }
+
+    private String getMatrixStr(double[][] mat) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < mat.length; i++) {
+            for (int j = 0; j < mat[0].length; j++) {
+                sb.append(String.format("%.2f",mat[i][j]));
+                if(j!=mat[0].length-1){
+                    sb.append(" ");
+                }
+            }
+            sb.append(System.getProperty("line.separator"));
+        }
+        return sb.toString();
     }
 
     @Override
