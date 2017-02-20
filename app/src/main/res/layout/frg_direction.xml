@@ -1,10 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:scrollbarThumbVertical="@android:color/darker_gray"
+    android:id="@+id/scrollView" >
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/root">
 
-    <com.dislab.leocai.spacesyncandroidui.ui.DirectionUI
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/viewDirection" />
-</LinearLayout>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal">
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Please Input Exp Name"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tv_expName" />
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ready"
+                android:id="@+id/btn_ready" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ly_ui"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></LinearLayout>
+    </LinearLayout>
+</ScrollView>

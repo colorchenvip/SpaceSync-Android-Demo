@@ -119,12 +119,12 @@ public class PhoneFragment extends Fragment  implements View.OnClickListener, On
         tv_angle.setTextColor(Color.WHITE);
         rl.addView(tv_angle);
 
-        addText(rl, 0, 80, 550, 0, "Y", 14);
-        addText(rl, 0, 270, 330, 0, "X", 14);
+        addText(rl, 0, 105, 770, 0, "Y", 14);
+        addText(rl, 0, 280, 560, 0, "X", 14);
 
-        addText(rl,0,100,450,0,"Y'", 14);
-        addText(rl,0,370,350,0,"X'", 14);
-        addText(rl,0,350,550,0,"Z Z'", 14);
+        addText(rl,0,119,654,0,"Y'", 14);
+        addText(rl,0,375,565,0,"X'", 14);
+        addText(rl,0,380,800,0,"Z Z'", 14);
 
 
         addText(rl,0,120,350,0,"[", 40);

@@ -81,7 +81,7 @@ public class PhoneDisplayerAndroidImpl extends GLSurfaceView implements GLSurfac
             gl.glClearColor(0.0f, 0.0f, 0.0f, 1f);
             gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
             gl.glLoadIdentity();
-            gl.glTranslatef(0.0f, 0.0f, -5.0f);
+            gl.glTranslatef(-1.5f, -0.2f, -5.0f);
           //  triangle1.draw(gl);
             gl.glRotatef(15, 1, 0, 0);
             gl.glRotatef(-10, 0, 1, 0);

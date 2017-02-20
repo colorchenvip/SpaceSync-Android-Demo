@@ -1,6 +1,7 @@
 package com.dislab.leocai.spacesyncandroidui.ui;
 
 import android.os.Environment;
+import android.text.format.DateUtils;
 
 import com.dislab.leocai.spacesync.core.MultiClientDataBuffer;
 import com.dislab.leocai.spacesync.core.SyncBufferListener;
@@ -14,10 +15,12 @@ import java.io.IOException;
  */
 public class DataWriterListener implements  SyncBufferListener {
 
+    private final String expName;
     FileWriter fileWriter;
     private int writeCount;
 
-    public DataWriterListener() {
+    public DataWriterListener(String file) {
+        this.expName = file;
 
     }
 
@@ -35,7 +38,7 @@ public class DataWriterListener implements  SyncBufferListener {
     public void dealWithSyncBuffer(MultiClientDataBuffer buffer, boolean isSyncTime) {
         if (isSyncTime) {
             try {
-                fileWriter = new FileWriter(new File(Environment.getExternalStorageDirectory(), "multi_data_" + (writeCount++ + ".csv")));
+                fileWriter = new FileWriter(new File(Environment.getExternalStorageDirectory()+"/"+ expName, "multi_data_" + MyDataUtils.getTimeStr() + ".csv"));
                 double[][][] data_multi = buffer.get();
                 int clientNum = data_multi.length;
                 int row = data_multi[0].length;

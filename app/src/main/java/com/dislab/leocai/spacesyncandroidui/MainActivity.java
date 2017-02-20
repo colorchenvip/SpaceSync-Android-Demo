@@ -33,10 +33,10 @@ public class MainActivity extends FragmentActivity  {
                         .setIndicator("Inertial Reading"),
                 ChartFragment.class,
                 null);
-//        tabHost.addTab(tabHost.newTabSpec("Direction")
-//                        .setIndicator("Direction"),
-//                DirectionFragment.class,
-//                null);
+        tabHost.addTab(tabHost.newTabSpec("Direction")
+                        .setIndicator("Direction"),
+                DirectionFragment.class,
+                null);
 
 
     }

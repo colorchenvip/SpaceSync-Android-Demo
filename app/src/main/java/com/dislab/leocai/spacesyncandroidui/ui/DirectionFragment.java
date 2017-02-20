@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 
 import com.dislab.leocai.spacesync.core.DirectionEstimateResults;
@@ -28,19 +29,47 @@ public class DirectionFragment extends Fragment implements DirectionListener {
 
     private SpaceSync spaceSync;
     private List<DirectionUI> directionUIList;
+    private EditText tv_expName;
+
+    FileWriter fileWriterAngle;
+    FileWriter fileWriterNorth;
+    FileWriter fileWriterXAxis;
+
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         spaceSync = ((MainActivity)getActivity()).getSpaceSync();
-        if(spaceSync!=null){
-            spaceSync.setDataListener(new DataWriterListener());
-        }
-        return inflater.inflate(R.layout.frg_chart, container, false);
+
+        return inflater.inflate(R.layout.frg_direction, container, false);
     }
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        LinearLayout ly = (LinearLayout) getView().findViewById(R.id.root);
+        LinearLayout ly = (LinearLayout) getView().findViewById(R.id.ly_ui);
+        tv_expName = (EditText) getView().findViewById(R.id.tv_expName);
+        getView().findViewById(R.id.btn_ready).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String file = tv_expName.getText().toString();
+                if(file.equals("")) return;
+                tv_expName.setEnabled(false);
+                v.setEnabled(false);
+                try {
+                    File parent = new File(Environment.getExternalStorageDirectory() + "/" + file);
+                    parent.deleteOnExit();
+                    parent.mkdirs();
+                    fileWriterAngle = new FileWriter(new File(Environment.getExternalStorageDirectory()+"/"+file, "angle.csv"));
+                    fileWriterXAxis = new FileWriter(new File(Environment.getExternalStorageDirectory()+"/"+file, "xAxis.csv"));
+                    fileWriterNorth = new FileWriter(new File(Environment.getExternalStorageDirectory()+"/"+file, "north.csv"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                if(spaceSync!=null){
+                    spaceSync.setDataListener(new DataWriterListener(file));
+                }
+            }
+        });
         int clientsNum;
         if(spaceSync==null){
             clientsNum = 3;
@@ -63,37 +92,56 @@ public class DirectionFragment extends Fragment implements DirectionListener {
     @Override
     public void dealWithDirection(DirectionEstimateResults directions, boolean isSyncTime) {
         double[][] axises = directions.getHoriFcDirection();
-        double[][] magDirections = directions.getClientsMagDirections();
+        double[][] north = directions.getNorth();
         double [] angle = new double[axises.length];
         for (int i = 0; i < axises.length; i++) {
-            directionUIList.get(i).setV1(new float[]{(float) magDirections[i][0], (float) magDirections[i][2]});
+            directionUIList.get(i).setV1(north[i]);
             if(isSyncTime){
-                directionUIList.get(i).setV2(new float[]{(float) axises[i][0], (float) axises[i][2]});
+                directionUIList.get(i).setV2(axises[i]);
                 angle[i] = directionUIList.get(i).computAngle();
             }
         }
-        if(isSyncTime)
-            write(angle);
+        if(isSyncTime){
+            write(fileWriterAngle,angle);
+            write(fileWriterNorth,north);
+            write(fileWriterXAxis,directions.getClientsInitXAxis());
+        }
     }
 
-    FileWriter  fileWriter;
-    {
+
+    private void write(FileWriter fw,double[][] vectors) {
+        if(fw==null){
+            return;
+        }
         try {
-            fileWriter = new FileWriter(new File(Environment.getExternalStorageDirectory(), "angle.csv"));
+            String line="";
+            for (int i = 0; i < vectors.length; i++) {
+                for (int j = 0; j < 3; j++) {
+                    line += vectors[i][j];
+                    if(i!=(vectors.length-1)||(j!=2)) line+=",";
+                }
+            }
+            fw.write(line+"\n");
+            fw.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private void write(double []angle) {
+
+
+    private void write(FileWriter fw, double[] angle) {
+        if(fw ==null){
+            return;
+        }
         try {
             String line="";
             for (int i = 0; i < angle.length; i++) {
                 line += angle[i];
                 if(i!=angle.length-1) line+=",";
             }
-            fileWriter.write(line+"\n");
-            fileWriter.flush();
+            fw.write(line + "\n");
+            fw.flush();
         } catch (IOException e) {
             e.printStackTrace();
         }
